@@ -1,0 +1,46 @@
+<!-- board.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+    <!-- ... -->
+    <body>
+        <h1>Our Board</h1>
+        <h4>Add the board</h4>
+        <form action="/add" method="POST">
+            title<br>
+            <input type="text" name="title"/><br>
+            Text<br>
+            <textarea name="context" cols="50" rows="10"></textarea><br><br>  <!-- 'maintext' -> 'context' -->
+            <input type="submit" value="submit"/><br>
+        </form>
+
+        <h4>Contents</h4>
+        <table class="table" border="1" width=600 style="word-break:break-all; table-layout: fixed;" align="center">
+            <thead>
+                <th width="4%">No</th>
+                <th width="15%">Title</th>
+                <th width="25%">Text</th>
+                <th width="15%">Actions</th>
+            </thead>
+            {% for row in board %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ row[1] }}</td>
+                <td>{{ row[2] }}</td>
+                <td>
+                    <a href="{{ url_for('update', no=row[0]) }}">Update</a>  <!-- 'uid' -> 'no' -->
+                    <form action="{{ url_for('delete', no=row[0]) }}" method="POST" style="display: inline;">  <!-- 'uid' -> 'no' -->
+                        <input type="submit" value="Delete">
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+        
+        <h4>Search</h4>
+        <form action="/search" method="GET">
+            <input type="text" name="keyword" placeholder="Search">
+            <input type="submit" value="Search">
+        </form>
+    </body>
+</html>
