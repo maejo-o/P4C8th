@@ -19,6 +19,7 @@ def checkBrackets(statement):
     return stack.isEmpty()
 
 
+
 str1 = "{ A[(i+1)]=0; }"
 str2 = "if ((x<0) && (y<3)"
 str3 = "while (n<8)) {n++;}"
