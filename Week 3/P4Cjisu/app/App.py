@@ -25,7 +25,7 @@ def index():
 def add():
     if request.method == 'POST':
         title = request.form['title']
-        content = request.form['context']  
+        content = request.form['maintext']  
         cur = mysql.connection.cursor()
         cur.execute("INSERT INTO board (title, maintext) VALUES (%s, %s)", (title, content))
         mysql.connection.commit()
@@ -37,7 +37,7 @@ def update(no):
     cur = mysql.connection.cursor()
     if request.method == 'POST':
         title = request.form['title']
-        content = request.form['context']  # 'context' 필드명으로 수정
+        content = request.form['maintext'] 
         cur.execute("UPDATE board SET title = %s, maintext = %s WHERE no = %s", (title, content, no))
         mysql.connection.commit()
         cur.close()
