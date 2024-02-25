@@ -2,20 +2,22 @@
 
 <!DOCTYPE html>
 <html lang="en">
-    <!-- ... -->
+    <head>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"/>
+    </head>
+
     <body>
-        <h1>Our Board</h1>
-        <h4>Add the board</h4>
-        <form action="/add" method="POST">
-            title<br>
-            <input type="text" name="title"/><br>
-            Text<br>
-            <textarea name="context" cols="50" rows="10"></textarea><br><br>  <!-- 'maintext' -> 'context' -->
-            <input type="submit" value="submit"/><br>
+        <h1>Notice board</h1>
+        <hr> 
+        <h4>Search</h4>
+        <form action="/search" method="GET">
+            <input type="text" name="keyword" placeholder="Search">
+            <input type="submit" value="Search">
         </form>
+        <hr>
 
         <h4>Contents</h4>
-        <table class="table" border="1" width=600 style="word-break:break-all; table-layout: fixed;" align="center">
+        <table class="table" border="1" width=600 style="word-break:break-all; table-layout: fixed;">
             <thead>
                 <th width="4%">No</th>
                 <th width="15%">Title</th>
@@ -28,19 +30,22 @@
                 <td>{{ row[1] }}</td>
                 <td>{{ row[2] }}</td>
                 <td>
-                    <a href="{{ url_for('update', no=row[0]) }}">Update</a>  <!-- 'uid' -> 'no' -->
-                    <form action="{{ url_for('delete', no=row[0]) }}" method="POST" style="display: inline;">  <!-- 'uid' -> 'no' -->
+                    <a href="{{ url_for('update', no=row[0]) }}" class="button update-button">Update</a>
+                    <form action="{{ url_for('delete', no=row[0]) }}" method="POST" style="display: inline;">
                         <input type="submit" value="Delete">
                     </form>
                 </td>
             </tr>
             {% endfor %}
         </table>
-        
-        <h4>Search</h4>
-        <form action="/search" method="GET">
-            <input type="text" name="keyword" placeholder="Search">
-            <input type="submit" value="Search">
+        <hr>
+        <h4>Add the Note</h4>
+        <form action="/add" method="POST">
+            title<br>
+            <input type="text" name="title"/><br>
+            Text<br>
+            <textarea name="context" cols="50" rows="10"></textarea><br><br>  
+            <input type="submit" value="submit"/><br>
         </form>
     </body>
 </html>

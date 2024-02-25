@@ -1,0 +1,96 @@
+/* style.css */
+
+body {
+    background-color: #f0f8ff;
+    font-family: Arial, sans-serif;
+    color: #333;
+    text-align: left;
+}
+
+h1 {
+    color: #0066cc;
+}
+
+h4 {
+    color: #003366;
+}
+
+form {
+    margin: 20px auto;
+    width: 300px;
+}
+
+input[type="text"], textarea {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+input[type="submit"] {
+    width: 100%;
+    background-color: #0066cc;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+input[type="submit"]:hover {
+    background-color: #003366;
+}
+
+.table {
+    margin: 0 auto;
+}
+
+.table th, .table td {
+    padding: 15px;
+    text-align: left;
+}
+
+.table th {
+    background-color: #0066cc;
+    color: white;
+}
+
+.table tr:nth-child(even) {
+    background-color: #e6f2ff;
+}
+
+/* 기존 submit 버튼 스타일을 button 클래스로 적용 */
+.button {
+    display: inline-block;
+    width: auto; /* 자동 크기 조정 */
+    background-color: #0066cc;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none; /* 링크의 밑줄 제거 */
+}
+
+.button:hover {
+    background-color: #003366;
+}
+
+/* Update 버튼을 위한 추가 클래스 */
+.update-button {
+    background-color: #0066cc; /* 버튼 색상 변경 (옵션) */
+}
+
+/* Delete 버튼의 스타일도 클래스를 통해 적용 */
+.delete-button {
+    background-color: #f44336; /* 버튼 색상 변경 (옵션) */
+}
+.delete-button:hover {
+    background-color: #d32f2f; /* Hover 색상 변경 (옵션) */
+}

@@ -1,47 +1,18 @@
+<!-- update.html -->
+
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href=".. /BOARD/style.css">
-        <title>게시판</title>
-        <style type="text/css">
-            body { text-align: center;}
-        </style>
-    </head>
-    <body>
-        <h1>Our Board</h1>
-        <h4>Add the board</h4>
-        <form action = "/add" method="POST">
-            title<br>
-            <input type = "text" name="title"/><br>
-            Text<br>
-            <textarea name="context" cols="50" rows="10"></textarea><br><br>
-            <input type = "submit" value = "submit"/><br>
-        </form>
-
-        <h4>Contents</h4>
-        <table
-            class = "table" border = "1"
-            width = 600 style = "word-break:break-all"
-            style = "table-layout: fixed" align="center">
-
-        <thread>
-            <th width="4%">No</th>
-            <th width="15%">Title</th>
-            <th width="25%">Text</th>
-        </thread>
-        {% for row in board %}
-        <tr>
-            <td>{{ loop.index }}</td>>
-            <td>{{ row[0] }}</td>
-            <td>{{ row[1] }}</td>
-            <td><a href = "{{url_for('update', uid = loop.index)}}">Change</a>
-                <a href = "{{url_for('update', uid = loop.index)}}">Delete</a>
-            </td>
-        </tr>
-        {% endfor %}
-        </table>
-    </body>
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"/>
+</head>
+<body>
+    <h1>Update Board</h1>
+    <form action="{{ url_for('update', no=post[0]) }}" method="POST">  <!-- 'uid' 대신 'no' 사용 -->
+        title<br>
+        <input type="text" name="title" value="{{ post[1] }}"/><br>
+        Text<br>
+        <textarea name="context" cols="50" rows="10">{{ post[2] }}</textarea><br><br>  <!-- 'maintext' -> 'context' -->
+        <input type="submit" value="submit"/><br>
+    </form>
+</body>
 </html>
