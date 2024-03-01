@@ -13,11 +13,11 @@
     {% if session['loggedin'] %}
     <a href="{{ url_for('logout') }}" class="button logout-button">Logout</a>
     {% endif %}
-    <a href="{{ url_for('board') }}" class="button logout-button">Go to Board</a><hr>
+    <a href="{{ url_for('board') }}" class="button go-button">Go to Board</a><hr>
     
     <h2>Member User</h2>
     <p>You can Create, Read, Update, Delete </p>
-    <form action="{{ url_for('board') }}" method="post">
+    <form action="{{ url_for('login') }}" method="post">
         ID: <input type="text" name="id"><br>
         Password: <input type="password" name="pw"><br>
         <input type="submit" value="Login">
@@ -25,7 +25,6 @@
     <a href="{{ url_for('register') }}" class="button add-button">Sign Up</a><br>
     <a href="{{ url_for('forgot') }}" class="button add-button">Forgot ID or Password?</a><br>
 
-    <!-- <a href="{{ url_for('login')}}" class="button board-button">Go to Member Mode</a><hr> -->
     <h2>Guest User</h2>
     <p>You can Read only</p>
     <a href="{{ url_for('board')}}" class="button board-button">Go to Guest Mode</a><hr>

@@ -8,8 +8,16 @@
 
     <body>
         <h1>Notice board</h1>
-        <a href="{{ url_for('home') }}" class="button add-button">Go to Home</a>
-        <hr> 
+        <!-- 아래는 사용자 이름 출력 기능 -->
+        {% if session['loggedin'] %}
+        <p>Hello, {{ session['name'] }}!</p>
+        {% endif %}
+        <!-- 아래는 logout 기능 -->
+        {% if session['loggedin'] %}
+        <a href="{{ url_for('logout') }}" class="button logout-button">Logout</a>
+        {% endif %}
+        <a href="{{ url_for('home') }}" class="button add-button">Go to Home</a><hr> 
+        
         <h4>Search</h4>
         <form action="/search" method="GET">
             <input type="text" name="keyword" placeholder="Search">
@@ -17,60 +25,64 @@
         </form>
         <hr>
         <h4>Add the Note</h4>
-        <a href="{{ url_for('add') }}" class="button add-button">Go to Post</a>
+        <a href="{{ url_for('add') }}" class="button add-button">Go to add the Post</a>
+        
         <h4>Contents</h4>
-        <a href="{{ url_for('board') }}" class="button add-button">Board</a>
         <table class="table" border="1" width=600 style="table-layout: fixed;">
             <thead>
                 <th width="4%">No</th>
                 <th width="15%">Title</th>
                 <th width="25%">Text</th>
-                <th width="25%">Secret</th>
                 <th width="25%">Actions</th>
                 <th width="25%">File</th>
+                <th width="25%">Secret</th>
             </thead>
             {% for row in board %}
             <tr>
                 <td>{{ loop.index }}</td>
                 <td>
                     {% if row[4]  %}
-                    <form action="{{ url_for('password_check', no=row[0]) }}" method="POST">
-                        <input type="password" id="password" name="password" placeholder="postpw">
-                        <input type="submit" value="Enter">
-                    </form>
+                        Secret Post
                     {% else %} 
-                    {{ row[1] }} 
+                        {{ row[1] }} 
                     {% endif %}
                 </td>
                 <td>
                     {% if row[4]  %} 
-                    Secret post
+                        Secret Post
                     {% else %} 
-                    {{ row[2] }}
-                </td>
-                <td>
-                    checkbox
-                </td>
-                <td>
-                    {% if row[4] %}
-                    비밀글입니다.
-                    {% else %}
-                    <a href="{{ url_for('update', no=row[0]) }}" class="button update-button">Update</a>
-                    <form action="{{ url_for('delete', no=row[0]) }}" method="POST" style="display: inline;">
-                        <input type="submit" value="Delete">
-                    </form>
+                        {{ row[2] }}
                     {% endif %}
                 </td>
                 <td>
                     {% if row[4] %}
-                    비밀글입니다.
+                        Secret Post
+                    {% else %}
+                        <a href="{{ url_for('update', no=row[0]) }}" class="button update-button">Update</a>
+                        <form action="{{ url_for('delete', no=row[0]) }}" method="POST" style="display: inline;">
+                            <input type="submit" value="Delete">
+                        </form>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if row[4] %}
+                        Secret Post
                     {% else %}
                         {% if row[5] %}
-                        {{ row[5] }}
-                        <form action="{{ url_for('download', filename=row[5] )}}" class="button update-button" method = "GET" enctype="multipart/form-data">
-                            <input type="submit" value="File Download"/>
-                        </form>
+                            {{ row[5] }}
+                            <form action="{{ url_for('download', filename=row[5] )}}" class="button update-button" method = "GET" enctype="multipart/form-data">
+                                <input type="submit" value="File Download"/>
+                            </form>
                         {% endif %}
+                    {% endif %}
+                </td>
+                <td>
+                    {% if row[4] %}
+                        <form action="{{ url_for('postpw_check', postpw=row[4]) }}" method="POST">
+                            <input type="password" name="password" required>
+                            <input type="submit" value="Enter">
+                    {% else %}
+
                     {% endif %}
                 </td>
             </tr>

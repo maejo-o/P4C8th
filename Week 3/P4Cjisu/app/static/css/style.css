@@ -120,7 +120,11 @@ input[type="submit"]:hover {
 }
 
 .logout-button {
-    background-color: #0066cc; /* 버튼 색상 변경 (옵션) */
+    background-color: #1a476b; /* 버튼 색상 변경 (옵션) */
+}
+
+.go-button {
+    background-color: #0066cc;
 }
 
 /* Delete 버튼의 스타일도 클래스를 통해 적용 */

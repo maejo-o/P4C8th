@@ -143,8 +143,8 @@ def add():
 
     return render_template('add.html')
 
-@app.route('/password_check/<no>', methods=['POST'])
-def password_check(no):
+@app.route('/postpw_check/<postpw>', methods=['POST'])
+def postpw_check(postpw):
     password = request.form.get('postpw')
 
     cur = mysql.connection.cursor()
@@ -158,6 +158,8 @@ def password_check(no):
     else:
         session['verified'] = False  # 인증 실패 정보 저장
         return redirect(url_for('board'))  # 게시판 페이지로 리다이렉트
+
+    
 @app.route('/download/<filename>', methods = ['GET', 'POST'])
 def download(filename):
     if 'loggedin' not in session:  # 로그인하지 않은 사용자인 경우
