@@ -16,11 +16,31 @@ h4 {
 }
 
 form {
-    margin: 20px auto;
+    margin: 5px auto;
     width: 300px;
 }
 
 input[type="text"], textarea {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+input[type="password"], textarea {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+input[type="email"], textarea {
     width: 100%;
     padding: 12px 20px;
     margin: 8px 0;
@@ -46,7 +66,11 @@ input[type="submit"]:hover {
 }
 
 .table {
-    margin: 0 auto;
+    width: 80%;
+    max-width: 90%;
+    margin: auto;
+    border-collapse: collapse;
+    font-size: 0.9em;
 }
 
 .table th, .table td {
@@ -84,6 +108,18 @@ input[type="submit"]:hover {
 
 /* Update 버튼을 위한 추가 클래스 */
 .update-button {
+    background-color: #0066cc; /* 버튼 색상 변경 (옵션) */
+}
+
+.board-button {
+    background-color: #0066cc; /* 버튼 색상 변경 (옵션) */
+}
+
+.add-button {
+    background-color: #0066cc; /* 버튼 색상 변경 (옵션) */
+}
+
+.logout-button {
     background-color: #0066cc; /* 버튼 색상 변경 (옵션) */
 }
 

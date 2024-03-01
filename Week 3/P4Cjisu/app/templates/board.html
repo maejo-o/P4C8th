@@ -8,6 +8,7 @@
 
     <body>
         <h1>Notice board</h1>
+        <a href="{{ url_for('home') }}" class="button add-button">Go to Home</a>
         <hr> 
         <h4>Search</h4>
         <form action="/search" method="GET">
@@ -15,37 +16,66 @@
             <input type="submit" value="Search">
         </form>
         <hr>
-
+        <h4>Add the Note</h4>
+        <a href="{{ url_for('add') }}" class="button add-button">Go to Post</a>
         <h4>Contents</h4>
-        <table class="table" border="1" width=600 style="word-break:break-all; table-layout: fixed;">
+        <a href="{{ url_for('board') }}" class="button add-button">Board</a>
+        <table class="table" border="1" width=600 style="table-layout: fixed;">
             <thead>
                 <th width="4%">No</th>
                 <th width="15%">Title</th>
                 <th width="25%">Text</th>
-                <th width="15%">Actions</th>
+                <th width="25%">Secret</th>
+                <th width="25%">Actions</th>
+                <th width="25%">File</th>
             </thead>
             {% for row in board %}
             <tr>
                 <td>{{ loop.index }}</td>
-                <td>{{ row[1] }}</td>
-                <td>{{ row[2] }}</td>
                 <td>
+                    {% if row[4]  %}
+                    <form action="{{ url_for('password_check', no=row[0]) }}" method="POST">
+                        <input type="password" id="password" name="password" placeholder="postpw">
+                        <input type="submit" value="Enter">
+                    </form>
+                    {% else %} 
+                    {{ row[1] }} 
+                    {% endif %}
+                </td>
+                <td>
+                    {% if row[4]  %} 
+                    Secret post
+                    {% else %} 
+                    {{ row[2] }}
+                </td>
+                <td>
+                    checkbox
+                </td>
+                <td>
+                    {% if row[4] %}
+                    비밀글입니다.
+                    {% else %}
                     <a href="{{ url_for('update', no=row[0]) }}" class="button update-button">Update</a>
                     <form action="{{ url_for('delete', no=row[0]) }}" method="POST" style="display: inline;">
                         <input type="submit" value="Delete">
                     </form>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if row[4] %}
+                    비밀글입니다.
+                    {% else %}
+                        {% if row[5] %}
+                        {{ row[5] }}
+                        <form action="{{ url_for('download', filename=row[5] )}}" class="button update-button" method = "GET" enctype="multipart/form-data">
+                            <input type="submit" value="File Download"/>
+                        </form>
+                        {% endif %}
+                    {% endif %}
                 </td>
             </tr>
             {% endfor %}
         </table>
         <hr>
-        <h4>Add the Note</h4>
-        <form action="/add" method="POST">
-            title<br>
-            <input type="text" name="title"/><br>
-            Text<br>
-            <textarea name="maintext" cols="50" rows="10"></textarea><br><br>  
-            <input type="submit" value="submit"/><br>
-        </form>
     </body>
 </html>
