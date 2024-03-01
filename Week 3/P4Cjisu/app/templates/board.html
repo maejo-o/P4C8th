@@ -19,7 +19,7 @@
         <a href="{{ url_for('home') }}" class="button add-button">Go to Home</a><hr> 
         
         <h4>Search</h4>
-        <form action="/search" method="GET">
+        <form action="/search" method="GET" class="search-form">
             <input type="text" name="keyword" placeholder="Search">
             <input type="submit" value="Search">
         </form>
@@ -60,7 +60,7 @@
                     {% else %}
                         <a href="{{ url_for('update', no=row[0]) }}" class="button update-button">Update</a>
                         <form action="{{ url_for('delete', no=row[0]) }}" method="POST" style="display: inline;">
-                            <input type="submit" value="Delete">
+                            <input type="submit" class="button delete-button" value="Delete">
                         </form>
                     {% endif %}
                 </td>
@@ -78,11 +78,7 @@
                 </td>
                 <td>
                     {% if row[4] %}
-                        <form action="{{ url_for('postpw_check', postpw=row[4]) }}" method="POST">
-                            <input type="password" name="password" required>
-                            <input type="submit" value="Enter">
-                    {% else %}
-
+                        <a href="{{ url_for('postpw_check', no=row[0]) }}" class="button add-button">Go to Secret Post</a>
                     {% endif %}
                 </td>
             </tr>

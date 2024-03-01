@@ -1,6 +1,6 @@
 # app.py
 
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, flash
 from flask_mysqldb import MySQL
 
 # 아래는 첨부파일 업로드를 위한 모듈
@@ -105,9 +105,9 @@ def forgot():
 def board():
     cur = mysql.connection.cursor()
     cur.execute("SELECT * FROM board")  # 비밀글 포함 모든 게시글을 가져옴
-    boards = cur.fetchall()
+    board = cur.fetchall()
     cur.close()
-    return render_template('board.html', boards=boards)
+    return render_template('board.html', board=board)
 
 
 @app.route('/add', methods=['GET', 'POST'])
@@ -143,21 +143,49 @@ def add():
 
     return render_template('add.html')
 
-@app.route('/postpw_check/<postpw>', methods=['POST'])
-def postpw_check(postpw):
-    password = request.form.get('postpw')
+@app.route('/reset_session', methods=['GET'])
+def reset_session():
+    session['verified'] = False  # 페이지 로드시마다 'verified' 키의 값을 False로 재설정
+    return redirect(url_for('postpw_check', no=session['no']))  # 'postpw_check' 페이지로 리다이렉트
 
+@app.route('/postpw_check/<no>', methods=['GET', 'POST'])
+def postpw_check(no):
+    session['no'] = no  # 게시글 번호 세션에 저장
+    if request.method == 'POST':
+        user_password = request.form.get('postpassword')  # 사용자가 입력한 비밀번호
+        if not user_password:  # 비밀번호를 입력하지 않은 경우
+            user_password = -1
+        else:
+            user_password = int(user_password)  # 비밀번호를 정수로 변환
+
+        cur = mysql.connection.cursor()
+        cur.execute("SELECT postpw FROM board WHERE no = %s", (no,))
+        result = cur.fetchone()
+        cur.close()
+
+        db_password = result[0]  # 데이터베이스에서 가져온 비밀번호
+
+        if db_password == user_password:  # 비밀번호가 일치하는 경우
+            session['verified'] = True  # 세션에 인증 정보 저장
+            return redirect(url_for('secretpost', no=no))
+        else:
+            flash('Incorrect Post PW.') # error message
+    return render_template('postpw_check.html', no=no)
+
+@app.route('/secretpost/<no>', methods=['GET'])
+def secretpost(no):
     cur = mysql.connection.cursor()
-    cur.execute("SELECT postpw FROM board WHERE no = %s", (no,))
-    result = cur.fetchone()
+    cur.execute("SELECT * FROM board WHERE no = %s", (no,))
+    post = cur.fetchone()
     cur.close()
 
-    if result[0] == password:  # 비밀번호가 일치하는 경우
-        session['verified'] = True  # 세션에 인증 정보 저장
-        return redirect(url_for('board'))  # 게시판 페이지로 리다이렉트
-    else:
-        session['verified'] = False  # 인증 실패 정보 저장
-        return redirect(url_for('board'))  # 게시판 페이지로 리다이렉트
+    if session.get('verified') != True:  # 인증되지 않은 경우
+        flash('Access denied.')  # 접근 거부 메시지를 표시
+        return redirect(url_for('postpw_check', no=no))
+    
+    # 인증된 경우에만 'secretpost.html' 페이지를 렌더링
+    return render_template('secretpost.html', post=post)
+
 
     
 @app.route('/download/<filename>', methods = ['GET', 'POST'])
@@ -179,7 +207,7 @@ def download(filename):
                 except FileNotFoundError:
                     abort(404)
             else:
-                return "Incorrect postpw"
+                return "Incorrect post PW"
         elif result[0] == -1:  # 비밀번호가 설정되지 않은 게시글인 경우
             try:
                 return send_from_directory(app.config['UPLOAD_FOLDER'], filename, as_attachment=True)
@@ -221,10 +249,16 @@ def delete(no):
     return redirect(url_for('board'))
 
 @app.route('/search', methods=['GET'])
+@app.route('/search', methods=['GET'])
 def search():
-    keyword = request.args.get('keyword', '')
+    keyword = request.args.get('keyword', None)  # 검색어가 없을 경우 None 반환
     cur = mysql.connection.cursor()
-    cur.execute("SELECT * FROM board WHERE title LIKE %s OR maintext LIKE %s", ('%'+keyword+'%', '%'+keyword+'%'))
+
+    if keyword:  # 검색어가 있는 경우
+        cur.execute("SELECT * FROM board WHERE title LIKE %s OR maintext LIKE %s", ('%'+keyword+'%', '%'+keyword+'%'))
+    else:  # 검색어가 없는 경우
+        cur.execute("SELECT * FROM board")
+
     board = cur.fetchall()
     cur.close()
     return render_template('board.html', board=board)

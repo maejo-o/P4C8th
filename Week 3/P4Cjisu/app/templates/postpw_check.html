@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"/>
+    </head>
+
+    <body>
+        <h1>Secret Post, No: {{ session['no'] }}</h1>
+        {% if session['loggedin'] %}
+        <p>Hello, {{ session['name'] }}!</p>
+        {% endif %}
+        
+        <a href="{{ url_for('board') }}" class="button add-button">Go Back</a><hr> 
+
+        <h1>Please enter the password for the post</h1>
+        <form action="{{ url_for('reset_session') }}" method="get">
+            <input type="submit" value="Reset Session">
+        </form>
+
+        <form method="POST" action="{{ url_for('postpw_check', no=no) }}">
+            <label for="postpassword">Password:</label>
+            <input type="password" id="postpassword" name="postpassword">
+            <input type="submit" value="Enter">
+        </form>
+
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <ul class="flashes">
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+    </body>
+
+
