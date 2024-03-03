@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"/>
+    <title>Forgot ID or Password</title>
+</head>
+<body>
+    <a href="{{ url_for('login') }}" class="button go-button">Go to Login</a><hr>
+    <h4>Please enter your ID:</h4>
+    <form action="/forgot_pw" method="post">
+        ID: <input type="text" name="id"><br>
+        <input type="submit" value="Find Password">
+    </form>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul class=flashes>
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+    <p>If you forget you ID?</p>
+    <a href="{{ url_for('forgot_id') }}" class="button add-button">Go to Find the ID</a><br>
+</body>
+</html>

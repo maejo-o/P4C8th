@@ -1,7 +1,8 @@
 # app.py
 
 from flask import Flask, render_template, request, redirect, url_for, session, flash
-from flask_mysqldb import MySQL
+from flask_mysqldb import MySQL 
+import MySQLdb.cursors
 
 # 아래는 첨부파일 업로드를 위한 모듈
 from werkzeug.utils import secure_filename
@@ -84,26 +85,37 @@ def register():
         return redirect(url_for('home'))  # 회원가입 성공시 로그인 페이지로 이동
     return render_template('register.html')
 
-@app.route('/forgot', methods=['GET', 'POST'])
-def forgot():
-    msg = ' '
+@app.route('/forgot_pw', methods=['GET', 'POST'])
+def forgot_pw():
     if request.method == 'POST':
-        email = request.form['email']
-        cur = mysql.connection.cursor()
-        cur.execute('SELECT * FROM users WHERE email = %s', [email])
-        account = cur.fetchone()
-        if account:
-            msg = 'Your ID is ' + account[1] + ' and your password is ' + account[2]
+        id = request.form['id']
+        cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        result = cur.execute('SELECT pw FROM users WHERE id = %s', [id])
+        if result > 0:
+            user_pw = cur.fetchone()['pw']
+            flash('Your password is: ' + user_pw)
         else:
-            msg = 'No account found for this email!'
+            flash('No account found with that ID.')
         cur.close()
-        return render_template('forgot.html', msg=msg)
-    return render_template('forgot.html')
+    return render_template('forgot_pw.html')
 
+@app.route('/forgot_id', methods=['GET', 'POST'])
+def forgot_id():
+    if request.method == 'POST':
+        name = request.form['name']
+        cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        result = cur.execute('SELECT id FROM users WHERE name = %s', [name])
+        if result > 0:
+            user_id = cur.fetchone()['id']
+            flash('Your ID is: ' + user_id)
+        else:
+            flash('No account found with that name.')
+        cur.close()
+    return render_template('forgot_id.html')
 
 @app.route('/board')
 def board():
-    cur = mysql.connection.cursor()
+    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cur.execute("SELECT * FROM board")  # 비밀글 포함 모든 게시글을 가져옴
     board = cur.fetchall()
     cur.close()
@@ -150,6 +162,8 @@ def reset_session():
 
 @app.route('/postpw_check/<no>', methods=['GET', 'POST'])
 def postpw_check(no):
+    if 'loggedin' not in session:  # 로그인하지 않은 사용자인 경우
+        return redirect(url_for('home'))  # 로그인 페이지로 리다이렉트
     session['no'] = no  # 게시글 번호 세션에 저장
     if request.method == 'POST':
         user_password = request.form.get('postpassword')  # 사용자가 입력한 비밀번호
