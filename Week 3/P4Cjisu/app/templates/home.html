@@ -22,10 +22,11 @@
         Password: <input type="password" name="pw"><br>
         <input type="submit" value="Login">
     </form>
+    
     <a href="{{ url_for('register') }}" class="button add-button">Sign Up</a><br>
     <a href="{{ url_for('forgot_pw') }}" class="button add-button">Forgot ID or Password?</a><br>
 
     <h2>Guest User</h2>
     <p>You can Read only</p>
-    <a href="{{ url_for('board')}}" class="button board-button">Go to Guest Mode</a><hr>
+    <a href="{{ url_for('board') }}" class="button board-button">Go to Guest Mode</a><hr>
 </body>

@@ -41,44 +41,44 @@
             <tr>
                 <td>{{ loop.index }}</td>
                 <td>
-                    {% if row[4]  %}
+                    {% if row['postpw']  %}
                         Secret Post
                     {% else %} 
-                        {{ row[1] }} 
+                        {{ row['title'] }} 
                     {% endif %}
                 </td>
                 <td>
-                    {% if row[4]  %} 
+                    {% if row['postpw']  %} 
                         Secret Post
                     {% else %} 
-                        {{ row[2] }}
+                        {{ row['maintext'] }}
                     {% endif %}
                 </td>
                 <td>
-                    {% if row[4] %}
+                    {% if row['postpw'] %}
                         Secret Post
                     {% else %}
-                        <a href="{{ url_for('update', no=row[0]) }}" class="button update-button">Update</a>
-                        <form action="{{ url_for('delete', no=row[0]) }}" method="POST" style="display: inline;">
+                        <a href="{{ url_for('update', no=row['no']) }}" class="button update-button">Update</a>
+                        <form action="{{ url_for('delete', no=row['no']) }}" method="POST" style="display: inline;">
                             <input type="submit" class="button delete-button" value="Delete">
                         </form>
                     {% endif %}
                 </td>
                 <td>
-                    {% if row[4] %}
+                    {% if row['postpw'] %}
                         Secret Post
                     {% else %}
-                        {% if row[5] %}
-                            {{ row[5] }}
-                            <form action="{{ url_for('download', filename=row[5] )}}" class="button update-button" method = "GET" enctype="multipart/form-data">
+                        {% if row['filename'] %}
+                            {{ row['filename'] }}
+                            <form action="{{ url_for('download', filename=row['filename'] )}}" class="button update-button" method = "GET" enctype="multipart/form-data">
                                 <input type="submit" value="File Download"/>
                             </form>
                         {% endif %}
                     {% endif %}
                 </td>
                 <td>
-                    {% if row[4] %}
-                        <a href="{{ url_for('postpw_check', no=row[0]) }}" class="button add-button">Go to Secret Post</a>
+                    {% if row['postpw'] %}
+                        <a href="{{ url_for('postpw_check', no=row['no']) }}" class="button add-button">Go to Secret Post</a>
                     {% endif %}
                 </td>
             </tr>

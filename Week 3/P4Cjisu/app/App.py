@@ -89,11 +89,15 @@ def register():
 def forgot_pw():
     if request.method == 'POST':
         id = request.form['id']
-        cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cur = mysql.connection.cursor()
         result = cur.execute('SELECT pw FROM users WHERE id = %s', [id])
         if result > 0:
-            user_pw = cur.fetchone()['pw']
-            flash('Your password is: ' + user_pw)
+            user = cur.fetchone()
+            if user is not None:
+                user_pw = user['pw']
+                flash('Your password is: ' + user_pw)
+            else:
+                flash('Unexpected error occurred.')
         else:
             flash('No account found with that ID.')
         cur.close()
@@ -207,28 +211,28 @@ def download(filename):
     if 'loggedin' not in session:  # 로그인하지 않은 사용자인 경우
         return redirect(url_for('home'))  # 로그인 페이지로 리다이렉트
 
-        cur = mysql.connection.cursor()
-        cur.execute("SELECT postpw FROM board WHERE filename = %s", (filename,))
-        result = cur.fetchone()
-        cur.close()
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT postpw FROM board WHERE filename = %s", (filename,))
+    result = cur.fetchone()
+    cur.close()
 
-        if request.method == 'POST':
-            password = request.form.get('password')
-        
-            if result[0] != -1 and result[0] == password:  # 비밀번호가 설정된 게시글 + 비밀번호가 일치하는 경우
-                try:
-                    return send_from_directory(app.config['UPLOAD_FOLDER'], filename, as_attachment=True)
-                except FileNotFoundError:
-                    abort(404)
-            else:
-                return "Incorrect post PW"
-        elif result[0] == -1:  # 비밀번호가 설정되지 않은 게시글인 경우
+    if request.method == 'POST':
+        password = request.form.get('password')
+    
+        if result[0] != -1 and result[0] == password:  # 비밀번호가 설정된 게시글 + 비밀번호가 일치하는 경우
             try:
                 return send_from_directory(app.config['UPLOAD_FOLDER'], filename, as_attachment=True)
             except FileNotFoundError:
                 abort(404)
         else:
-            return render_template("board.html", filename=filename)
+            return "Incorrect post PW"
+    elif result[0] == -1:  # 비밀번호가 설정되지 않은 게시글인 경우
+        try:
+            return send_from_directory(app.config['UPLOAD_FOLDER'], filename, as_attachment=True)
+        except FileNotFoundError:
+            abort(404)
+    else:
+        return render_template("board.html", filename=filename)
 
 
 @app.route('/update/<int:no>', methods=['GET', 'POST'])
@@ -263,7 +267,6 @@ def delete(no):
     return redirect(url_for('board'))
 
 @app.route('/search', methods=['GET'])
-@app.route('/search', methods=['GET'])
 def search():
     keyword = request.args.get('keyword', None)  # 검색어가 없을 경우 None 반환
     cur = mysql.connection.cursor()
@@ -276,6 +279,7 @@ def search():
     board = cur.fetchall()
     cur.close()
     return render_template('board.html', board=board)
+
 
 if __name__ == "__main__":
     app.run(debug=True)
