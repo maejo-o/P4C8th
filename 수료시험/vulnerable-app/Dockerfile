@@ -1,32 +1,54 @@
-# 베이스 이미지 설정
-FROM openjdk:8-jdk-alpine as build
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-# Maven 버전 설정
-ARG MAVEN_VERSION=3.6.3
-ARG USER_HOME_DIR="/root"
+    <groupId>org.example</groupId>
+    <artifactId>vulnerable-app</artifactId>
+    <version>1.0-SNAPSHOT</version>
 
-# Maven 설치를 위한 환경 변수 설정
-ENV MAVEN_HOME /usr/share/maven
-ENV MAVEN_CONFIG "$USER_HOME_DIR/.m2"
+    <properties>
+        <java.version>1.8</java.version>
+        <spring.boot.version>2.5.4</spring.boot.version>
+    </properties>
 
-# Maven 설치
-RUN mkdir -p /usr/share/maven /usr/share/maven/ref \
-  && wget -O /tmp/apache-maven-$MAVEN_VERSION-bin.tar.gz http://archive.apache.org/dist/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz \
-  && tar -xzf /tmp/apache-maven-$MAVEN_VERSION-bin.tar.gz -C /usr/share/maven --strip-components=1 \
-  && rm -f /tmp/apache-maven-$MAVEN_VERSION-bin.tar.gz \
-  && ln -s /usr/share/maven/bin/mvn /usr/bin/mvn
+    <dependencies>
+        <!-- Spring Boot Starter Web -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <version>${spring.boot.version}</version>
+        </dependency>
 
-# 프로젝트 파일 복사
-COPY src /home/app/src
-COPY pom.xml /home/app
+        <!-- 업데이트된 Log4j 버전 -->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>2.16.0</version> <!-- CVE-2021-44228 취약점을 수정한 버전 -->
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>2.16.0</version> <!-- CVE-2021-44228 취약점을 수정한 버전 -->
+        </dependency>
+    </dependencies>
 
-# Maven을 사용한 프로젝트 빌드
-RUN mvn -f /home/app/pom.xml clean package
-
-# 최종 실행을 위한 새로운 스테이지
-FROM openjdk:8-jdk-alpine
-COPY --from=build /home/app/target/*.jar app.jar
-
-# 애플리케이션 실행
-ENTRYPOINT ["java", "-cp", "/app/classes:/app/libs/*", "org.example.Main"]
-
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.2.0</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <mainClass>org.example.Main</mainClass> <!-- 수정된 메인 클래스의 정규화된 이름 -->
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
