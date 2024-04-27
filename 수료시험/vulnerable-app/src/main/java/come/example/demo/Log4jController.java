@@ -18,4 +18,10 @@ public class Log4jController {
         logger.info("User input: {}", input);
         return "Logged: " + input;
     }
+    @PostMapping("/log")
+    public String logInput(@RequestParam(name = "logInput", required = true) String logInput) {
+        logger.info(logInput); // 사용자 입력을 로그에 기록
+        return "redirect:/";
+    }
+
 }
